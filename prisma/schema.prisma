@@ -9,9 +9,27 @@ generator client {
 }
 
 model Ghost {
-  id            Int      @id @default(autoincrement())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  name          String   @db.VarChar(255)
-  description  String   @db.VarChar(255)
+  id           String     @id @default(uuid())
+  updatedAt    DateTime   @updatedAt
+  name         String
+  evidence     Evidence[] @relation("GhostEvidence")
+  must_have    Evidence?  @relation("GhostMustHave", fields: [must_have_id], references: [id])
+  must_have_id Int?
+  description  String     @db.VarChar(500)
+
+  @@index([must_have_id])
+}
+
+model Evidence {
+  id               Int     @id @default(autoincrement())
+  name             String
+  description      String? @default("description") @db.VarChar(600)
+  ghosts           Ghost[] @relation("GhostEvidence")
+  ghosts_must_have Ghost[] @relation("GhostMustHave")
+}
+
+model GhostTest {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String @db.VarChar(1000)
 }
