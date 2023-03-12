@@ -8,5 +8,7 @@ export async function GET(req: Request) {
       evidence: true,
     },
   });
-  return NextResponse.json({ ghostsWithEvidence });
+  return NextResponse.json(ghostsWithEvidence);
 }
+
+
