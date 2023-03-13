@@ -1,5 +1,6 @@
 import { getEvidence } from "./api/get-evidence/route";
 import { getGhosts } from "./api/get-ghosts/route";
+import Toggle from "../components/Toggle"
 
 export default async function Journal() {
 
@@ -36,14 +37,15 @@ export default async function Journal() {
         evidenceWithGhosts.map((evidence, index) => {
           return (
             <div key={index}>
-              <div className="font-bold">{evidence.name} </div>
-              <details className="ml-4"><summary>Evidence</summary>{evidence.description}</details>
+              <div class="flex">
+                <Toggle />
+                <div className="ml-2 font-bold">{evidence.name} </div>
+              </div>
+              <details className="ml-4 cursor-pointer"><summary>Evidence</summary>{evidence.description}</details>
             </div>
           )
         })
       )}
-
-
     </div>
   )
 
