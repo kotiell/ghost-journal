@@ -11,7 +11,16 @@ export default async function Journal() {
       {
         ghostsWithEvidence.map((ghost, index: number) => {
           return (
-            <div key={index}>{ghost.name}</div>
+            <div key={index}>
+              <h3 className="font-bold">{ghost.name}</h3>
+              {ghost.evidence.map((evidence, index) => {
+                return (
+                  <div className="ml-4" key={index}>
+                    {evidence.name}
+                  </div>
+                )
+              })}
+            </div>
           )
         })
       }
