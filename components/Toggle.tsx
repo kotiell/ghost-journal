@@ -1,12 +1,18 @@
 "use client";
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Switch } from '@headlessui/react'
 
-export default function Toggle() {
-  const [enabled, setEnabled] = useState(false)
+export default function Toggle({ name }) {
+
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    console.log(name)
+  }, [enabled, name])
 
   return (
     <Switch
+      onClick={() => console.log('test')}
       checked={enabled}
       onChange={setEnabled}
       className={`${enabled ? 'bg-orange-600' : 'bg-orange-200'
