@@ -65,7 +65,6 @@ export default function JournalContent({ ghosts, evidence }: IJournalContentProp
 
   const sectionTitleClassName = "text-3xl font-bold mb-4";
 
-  console.log(ghosts);
   return (
     <div>
       <h1 className="text-5xl font-bold mb-8 mt-12">GhostGetter Journal</h1>

@@ -17,12 +17,20 @@ export default async function Journal() {
     },
   });
 
+  const ghostTests = await prisma.ghostTest.findMany({
+    include: {
+      ghost: true,
+    },
+  })
 
 
   return (
     <div className="container mx-auto">
-      <JournalContent ghosts={JSON.stringify(ghostsWithEvidence)} evidence={JSON.stringify(evidenceWithGhosts)} />
+      <JournalContent
+        tests={JSON.stringify(ghostTests)}
+        ghosts={JSON.stringify(ghostsWithEvidence)}
+        evidence={JSON.stringify(evidenceWithGhosts)}
+      />
     </div>
   )
-
 }
