@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 
 interface IEvidence {
   name: string;
+  id: string;
 }
 
 interface IGhost {
   name: string;
   evidence: Array<IEvidence>;
+  must_have_id?: string;
 }
 
 interface IJournalContentProps {
@@ -28,8 +30,12 @@ export default function JournalContent({ ghosts, evidence }: IJournalContentProp
         return ghost.evidence.find((e) => e.name === evidence);
       });
     });
-    setMatchingGhosts(newMatchingGhosts);
-  }, [foundEvidence, ghosts]);
+
+    // Only update the state variable if it has changed
+    if (JSON.stringify(newMatchingGhosts) !== JSON.stringify(matchingGhosts)) {
+      setMatchingGhosts(newMatchingGhosts);
+    }
+  }, [foundEvidence, ghosts, matchingGhosts]);
 
   const handleEvidenceFound = (evidenceName: string) => {
     const updatedFoundEvidence = [...foundEvidence, evidenceName];
@@ -42,18 +48,34 @@ export default function JournalContent({ ghosts, evidence }: IJournalContentProp
   };
 
   const isGhostMatch = (ghost: IGhost) => {
+    if (ghost.must_have_id) {
+      const requiredEvidence = evidence.find((e) => e.id === ghost.must_have_id);
+      if (!requiredEvidence || !foundEvidence.includes(requiredEvidence.name)) {
+        return false;
+      }
+    }
     return foundEvidence.every((evidence) => {
       return ghost.evidence.find((e) => e.name === evidence);
     });
   };
+  const getEvidenceById = function (id) {
+    return evidence.find(evidence => evidence.id === id);
+  }
 
   const ghostCardClassName = (ghost: IGhost) => {
-    return isGhostMatch(ghost) ? "bg-gray-800" : " bg-black";
+    if (ghost.must_have_id) {
+      const requiredEvidence = evidence.find((e) => e.id === ghost.must_have_id);
+      if (!requiredEvidence || !foundEvidence.includes(requiredEvidence.name)) {
+        return "bg-red-800"; // add a CSS class to highlight the ghost as requiring evidence
+      }
+    }
+    return isGhostMatch(ghost) ? "bg-gray-800" : "bg-black";
   };
 
   const sectionTitleClassName = "text-3xl font-bold mb-4";
   const ghostCardClassNameDefault = "rounded-md p-4 shadow-md";
 
+  console.log(ghosts);
   return (
     <div>
       <h1 className="text-5xl font-bold mb-8 mt-12">GhostGetter Journal</h1>
@@ -72,6 +94,11 @@ export default function JournalContent({ ghosts, evidence }: IJournalContentProp
                       </div>
                     );
                   })}
+                {ghost.must_have_id && (
+                  <div className="ml-4 text-sm font-bold text-red-500">
+                  Requires: {getEvidenceById(ghost.must_have_id)?.name}
+                  </div>
+                )}
               </div>
             );
           })}
