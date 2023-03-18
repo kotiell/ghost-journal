@@ -11,18 +11,28 @@ interface IGhost {
   evidence: Array<IEvidence>;
   must_have_id?: string;
 }
+interface ITests {
+  id: number;
+  name: string;
+  description: string;
+  ghost: Array<IGhost>;
+  ghostId: string;
+}
 
 interface IJournalContentProps {
   ghosts: Array<IGhost>;
   evidence: Array<IEvidence>;
+  tests: Array<ITests>
 }
 
-export default function JournalContent({ ghosts, evidence }: IJournalContentProps) {
+export default function JournalContent({ ghosts, evidence, tests }: IJournalContentProps) {
   ghosts = JSON.parse(ghosts);
   evidence = JSON.parse(evidence);
+  tests = JSON.parse(tests);
 
   const [foundEvidence, setFoundEvidence] = useState<Array<string>>([]);
   const [matchingGhosts, setMatchingGhosts] = useState<Array<IGhost>>([]);
+  const [relevantTests, setRelevantTests] = useState<Array<ITests>>([]);
 
   useEffect(() => {
     const newMatchingGhosts = ghosts.filter((ghost: IGhost) => {
@@ -35,6 +45,8 @@ export default function JournalContent({ ghosts, evidence }: IJournalContentProp
     if (JSON.stringify(newMatchingGhosts) !== JSON.stringify(matchingGhosts)) {
       setMatchingGhosts(newMatchingGhosts);
     }
+
+    setRelevantTests(['test'])
   }, [foundEvidence, ghosts, matchingGhosts]);
 
 
@@ -64,6 +76,8 @@ export default function JournalContent({ ghosts, evidence }: IJournalContentProp
   };
 
   const sectionTitleClassName = "text-3xl font-bold mb-4";
+
+
 
   return (
     <div>
@@ -96,12 +110,15 @@ export default function JournalContent({ ghosts, evidence }: IJournalContentProp
                   )}
                 </div>
                 <button
-                  onClick={() =>
+                  onClick={() => {
                     setFoundEvidence(
                       evidenceFound
                         ? foundEvidence.filter((e) => e !== evidence.name)
                         : [...foundEvidence, evidence.name]
                     )
+                    const tests = relevantTests;
+                    console.log('found button ', tests)
+                  }
                   }
                   className={`h-12 w-full rounded px-4 py-2 ${evidenceFound ? "bg-green-700 text-white" : "bg-yellow-300 text-black "}`}
                 >
@@ -132,6 +149,27 @@ export default function JournalContent({ ghosts, evidence }: IJournalContentProp
                     Requires: {getEvidenceById(ghost.must_have_id)?.name}
                   </div>
                 )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+      {relevantTests.length > 0 && (
+        <div>
+          <h2 className={sectionTitleClassName}>Tests</h2>
+          {relevantTests.map((test, index) => {
+            return (
+              <div key={index} className="bg-white rounded-lg p-6 mb-8">
+                <h3 className="text-2xl font-bold mb-4">{test.name}</h3>
+                <p className="text-lg mb-4">{test.description}</p>
+                <div className="text-lg font-bold">Ghost(s):</div>
+                <ul className="list-disc list-inside mb-4">
+                  {/* {test.ghost.map((ghost, index) => {
+                    return (
+                      <li key={index}>{ghost.name}</li>
+                    );
+                  })} */}
+                </ul>
               </div>
             );
           })}
