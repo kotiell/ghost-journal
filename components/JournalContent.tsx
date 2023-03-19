@@ -7,9 +7,12 @@ interface IEvidence {
 }
 
 interface IGhost {
+  id: string;
   name: string;
   evidence: Array<IEvidence>;
   must_have_id?: string;
+  updatedAt: string;
+  description: string;
 }
 interface ITests {
   id: number;
@@ -30,24 +33,68 @@ export default function JournalContent({ ghosts, evidence, tests }: IJournalCont
   evidence = JSON.parse(evidence);
   tests = JSON.parse(tests);
 
+
+
   const [foundEvidence, setFoundEvidence] = useState<Array<string>>([]);
   const [matchingGhosts, setMatchingGhosts] = useState<Array<IGhost>>([]);
   const [relevantTests, setRelevantTests] = useState<Array<ITests>>([]);
 
+
+
+
+  const evidenceButton = function () {
+    console.log('evidenceButton');
+    findRelevantTests()
+  }
+
+  const findRelevantTests = function () {
+    console.log('findRelevantTests')
+    //tests = all possible tests
+    // need to get a list of possibleTests based on tests and matchingGhosts
+    // setRelevantTests
+    const relevantTestsTemp = [];
+  }
+
+
+
+
+
   useEffect(() => {
+    /*
+    Here we are using the .filter() method to create a new array of ghosts that match a certain criteria. In this case, we want to filter the ghosts that have all the evidence that we found. We start by defining a function that will be used to filter the ghosts:
+    */
     const newMatchingGhosts = ghosts.filter((ghost: IGhost) => {
+      /*
+      Here we are using the .every() method to make sure that every piece of evidence we found matches with a piece of evidence in the ghost's evidence array. We start by defining a function that will be used to check if each piece of evidence matches:
+      */
       return foundEvidence.every((evidence) => {
+        /*
+        Here we are using the .find() method to look for a specific piece of evidence in the ghost's evidence array. We are checking if the name of the evidence matches the name of the evidence we found. If there is a match, .find() will return the evidence object, which will be truthy and satisfy the .every() method. If there is no match, .find() will return undefined, which will be falsy and cause the .every() method to return false.
+        */
         return ghost.evidence.find((e) => e.name === evidence);
       });
     });
 
     // Only update the state variable if it has changed
     if (JSON.stringify(newMatchingGhosts) !== JSON.stringify(matchingGhosts)) {
+      const newTests = newMatchingGhosts.filter((ghost) => {
+        console.log('ghost', ghost.id + ' ' + ghost.name);
+        // // i want to return a test if it has the same id as the ghost's id
+
+        // return newMatchingGhosts.every((ghost)=>{
+        //   return test.ghostId.find((e) => {
+        //     console.log('e is ', e)
+        //   });
+        // })
+      })
       setMatchingGhosts(newMatchingGhosts);
     }
 
-    setRelevantTests(['test'])
-  }, [foundEvidence, ghosts, matchingGhosts]);
+
+
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [foundEvidence]);
 
 
   const isGhostMatch = (ghost: IGhost) => {
@@ -111,15 +158,14 @@ export default function JournalContent({ ghosts, evidence, tests }: IJournalCont
                 </div>
                 <button
                   onClick={() => {
+                    evidenceButton()
                     setFoundEvidence(
                       evidenceFound
                         ? foundEvidence.filter((e) => e !== evidence.name)
                         : [...foundEvidence, evidence.name]
                     )
                     const tests = relevantTests;
-                    console.log('found button ', tests)
-                  }
-                  }
+                  }}
                   className={`h-12 w-full rounded px-4 py-2 ${evidenceFound ? "bg-green-700 text-white" : "bg-yellow-300 text-black "}`}
                 >
                   {evidenceFound ? "Found" : "Not found"}
@@ -159,7 +205,7 @@ export default function JournalContent({ ghosts, evidence, tests }: IJournalCont
           <h2 className={sectionTitleClassName}>Tests</h2>
           {relevantTests.map((test, index) => {
             return (
-              <div key={index} className="bg-white rounded-lg p-6 mb-8">
+              <div key={index} className="bg-slate-900 rounded-lg p-6 mb-8">
                 <h3 className="text-2xl font-bold mb-4">{test.name}</h3>
                 <p className="text-lg mb-4">{test.description}</p>
                 <div className="text-lg font-bold">Ghost(s):</div>
@@ -175,7 +221,6 @@ export default function JournalContent({ ghosts, evidence, tests }: IJournalCont
           })}
         </div>
       )}
-
     </div>
   )
 }
