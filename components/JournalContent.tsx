@@ -131,7 +131,7 @@ export default function JournalContent({ ghosts, evidence, tests }: IJournalCont
     <div>
       <h1 className="text-5xl font-bold mb-8 mt-12">GhostGetter Journal</h1>
       {evidence && (
-        <div className="grid grid-cols-3 gap-4 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12">
           {evidence.map((evidence, index) => {
             const evidenceFound = foundEvidence.includes(evidence.name);
             const evidenceClassName = evidenceFound ? "text-green-500 font-bold" : "";
@@ -178,7 +178,7 @@ export default function JournalContent({ ghosts, evidence, tests }: IJournalCont
       )}
       {ghosts && <h2 className={sectionTitleClassName}>Ghosts</h2>}
       {ghosts && (
-        <div className="grid grid-cols-3 gap-4 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12">
           {ghosts.map((ghost, index: number) => {
             return (
               <div key={index} className={`${ghostCardClassName(ghost)} p-4 rounded `}>
