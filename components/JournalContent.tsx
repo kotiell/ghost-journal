@@ -77,16 +77,17 @@ export default function JournalContent({ ghosts, evidence, tests }: IJournalCont
 
     // Only update the state variable if it has changed
     if (JSON.stringify(newMatchingGhosts) !== JSON.stringify(matchingGhosts)) {
-      const newTests = newMatchingGhosts.filter((ghost) => {
-        console.log('ghost', ghost.id + ' ' + ghost.name);
-        // // i want to return a test if it has the same id as the ghost's id
-
-        // return newMatchingGhosts.every((ghost)=>{
-        //   return test.ghostId.find((e) => {
-        //     console.log('e is ', e)
-        //   });
-        // })
+      const currentTests: ITests[] = [];
+      newMatchingGhosts.forEach((ghost) => {
+        tests.forEach((test) => {
+          if (test.ghostId.includes(ghost.id)) {
+            currentTests.push(test);
+          }
+        })
       })
+
+
+      setRelevantTests(currentTests);
       setMatchingGhosts(newMatchingGhosts);
     }
 
