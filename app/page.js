@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div className="container mx-auto mt-8">
       <h1 className="text-5xl font-bold">Ghost Getter</h1>
-      <h3 class="text-xl italic">Get them ghosts</h3>
+      <h3 class="text-xl italic mb-8">Get them ghosts</h3>
       <div class="grid grid-cols-3 gap-8">
         
         {GhostData.map((ghost, index) => {
